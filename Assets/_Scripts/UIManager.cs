@@ -228,7 +228,7 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu"); // Убедитесь, что это имя вашей сцены меню
     }
     
-    // Важно: отписываемся от событий при уничтожении объекта
+    // Отписываемся от событий при уничтожении объекта
     void OnDestroy()
     {
         if (gameManager != null)

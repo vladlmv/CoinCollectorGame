@@ -8,31 +8,33 @@ public class Coin : MonoBehaviour
     private bool isCollected = false;
     private Renderer coinRenderer;
     private Collider coinCollider;
+    private AudioManager _audioManager;
+    private GameManager _gameManager;
 
     void Start()
     {
-        // Получаем компоненты
         coinRenderer = GetComponent<Renderer>();
         coinCollider = GetComponent<Collider>();
         
-        if (coinRenderer == null) 
-            Debug.LogError("Renderer not found on Coin!");
-        if (coinCollider == null) 
-            Debug.LogError("Collider not found on Coin!");
+        _audioManager = FindAnyObjectByType<AudioManager>();
+        _gameManager = FindAnyObjectByType<GameManager>();
+        
+        if (_audioManager == null)
+            Debug.LogError("AudioManager не найден в сцене!");
+        if (_gameManager == null)
+            Debug.LogError("GameManager не найден в сцене!");
     }
 
     void Update()
     {
         if (!isCollected)
         {
-            // Вращение монеты вокруг оси Z
             transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        // Проверяем, что столкнулся игрок и монета еще не собрана
         if (!isCollected && other.CompareTag("Player"))
         {
             CollectCoin();
@@ -43,40 +45,33 @@ public class Coin : MonoBehaviour
     {
         isCollected = true;
         
-        // ВОСПРОИЗВОДИМ ЗВУК СБОРА МОНЕТЫ
-        if (AudioManager.Instance != null)
+        if (_audioManager != null)
         {
-            AudioManager.Instance.PlayCoinCollectSound();
+            _audioManager.PlayCoinCollectSound();
+            Debug.Log("Звук монеты воспроизведен!");
         }
         else
         {
-            Debug.LogWarning("AudioManager not found!");
+            Debug.LogError("AudioManager не найден!");
         }
         
-        // Сообщаем GameManager о сборе монеты
-        GameManager gameManager = FindAnyObjectByType<GameManager>();
-        if (gameManager != null)
+        if (_gameManager != null)
         {
-            gameManager.AddCoin();
+            _gameManager.AddCoin();
         }
         else
         {
-            Debug.LogError("GameManager not found!");
+            Debug.LogError("GameManager не найден!");
         }
         
-        // Отключаем визуальную часть и коллайдер
         if (coinRenderer != null)
             coinRenderer.enabled = false;
         if (coinCollider != null)
             coinCollider.enabled = false;
         
-        // Уничтожаем объект через небольшое время
         Destroy(gameObject, 0.5f);
-        
-        Debug.Log("Coin collected!");
     }
     
-    // Статический метод для подсчета монет на сцене
     public static int GetTotalCoinsInScene()
     {
         Coin[] coins = FindObjectsByType<Coin>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
