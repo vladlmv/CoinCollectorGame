@@ -13786,7 +13786,7 @@ GameObject:
   - component: {fileID: 2018190730}
   - component: {fileID: 2018190729}
   m_Layer: 0
-  m_Name: GameLifeTimeScope
+  m_Name: GameScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13810,6 +13810,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   audioManager: {fileID: 1092348484}
   gameManager: {fileID: 998927508}
+  _gamePresenterConfig: {fileID: 11400000, guid: f353d3b15611e4669ad38ce8b966d7d4, type: 2}
 --- !u!4 &2018190730
 Transform:
   m_ObjectHideFlags: 0
@@ -14320,6 +14321,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 2018190730}
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
@@ -14331,4 +14333,3 @@ SceneRoots:
   - {fileID: 641483903}
   - {fileID: 1092348485}
   - {fileID: 153550520}
-  - {fileID: 2018190730}

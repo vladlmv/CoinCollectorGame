@@ -22,7 +22,6 @@ public class MainMenuManager : MonoBehaviour
             quitButton.onClick.AddListener(QuitGame);
         }
         
-        Debug.Log("Главное меню загружено");
     }
     
     // Запуск игры
