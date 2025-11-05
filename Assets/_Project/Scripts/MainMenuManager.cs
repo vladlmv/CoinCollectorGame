@@ -27,16 +27,12 @@ public class MainMenuManager : MonoBehaviour
     // Запуск игры
     void StartGame()
     {
-        Debug.Log("Запуск игры...");
-        
         SceneManager.LoadScene("SampleScene");
     }
     
     // Выход из игры
     void QuitGame()
     {
-        Debug.Log("Выход из игры...");
-        
         // Выход из приложения
         Application.Quit();
         

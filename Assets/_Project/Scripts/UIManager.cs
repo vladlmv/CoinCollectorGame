@@ -37,10 +37,6 @@ public class UIManager : MonoBehaviour
         {
             victoryImage.SetActive(false);
         }
-        else
-        {
-            Debug.LogError("VictoryImage не назначен в инспекторе!");
-        }
         
         // Выключаем и настраиваем кнопки
         if (restartButton != null)
@@ -64,10 +60,6 @@ public class UIManager : MonoBehaviour
             // Подписываемся на события GameManager
             gameManager.OnCoinCollected += OnCoinCollected;
             gameManager.OnGameWon += OnGameWon;
-        }
-        else
-        {
-            Debug.LogError("GameManager не найден в сцене!");
         }
     }
     
@@ -121,7 +113,6 @@ public class UIManager : MonoBehaviour
     void OnCoinCollected(int collectedCoins)
     {
         UpdateCoinCount(collectedCoins, gameManager.GetTotalCoins());
-        Debug.Log($"Монета собрана. Всего: {collectedCoins}");
     }
     
     // Обработчик события победы
@@ -133,8 +124,6 @@ public class UIManager : MonoBehaviour
     // Показать сообщение о победе
     public void ShowWinMessage()
     {
-        Debug.Log("Показываем сообщение о победе");
-        
         // Останавливаем таймер
         isTimerRunning = false;
         
@@ -165,8 +154,6 @@ public class UIManager : MonoBehaviour
     // Анимация плавного появления панели победы
     IEnumerator FadeInVictoryMessage()
     {
-        Debug.Log("Запуск анимации появления VictoryImage");
-        
         // Получаем компоненты для анимации
         Image background = victoryImage.GetComponent<Image>();
         TextMeshProUGUI text = victoryText;
@@ -208,23 +195,17 @@ public class UIManager : MonoBehaviour
             textColor.a = 1f;
             text.color = textColor;
         }
-        else
-        {
-            Debug.LogError("Не удалось найти компоненты для анимации!");
-        }
     }
     
     // Перезапуск текущей сцены
     void RestartGame()
     {
-        Debug.Log("Перезапуск игры");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
     // Возврат в главное меню
     void GoToMainMenu()
     {
-        Debug.Log("Возврат в главное меню");
         SceneManager.LoadScene("MainMenu"); // Убедитесь, что это имя вашей сцены меню
     }
     

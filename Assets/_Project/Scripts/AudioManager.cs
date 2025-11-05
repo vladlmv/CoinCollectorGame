@@ -10,7 +10,6 @@ public class AudioManager : MonoBehaviour
     {
         soundEffectSource = gameObject.AddComponent<AudioSource>();
         soundEffectSource.playOnAwake = false;
-        Debug.Log("AudioManager инициализирован");
     }
 
     public void PlayCoinCollectSound()
@@ -18,7 +17,6 @@ public class AudioManager : MonoBehaviour
         if (coinCollectSound != null && soundEffectSource != null)
         {
             soundEffectSource.PlayOneShot(coinCollectSound);
-            Debug.Log("AudioManager: звук воспроизведен!");
         }
         else
         {

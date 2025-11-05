@@ -22,13 +22,11 @@ public class GameManager : MonoBehaviour
     {
         // Автоматически подсчитываем монеты на сцене
         totalCoinsInLevel = Coin.GetTotalCoinsInScene();
-        Debug.Log($"Game started. Total coins: {totalCoinsInLevel}");
     }
     
     public void AddCoin()
     {
         collectedCoins++;
-        Debug.Log($"Coin collected! Total: {collectedCoins}/{totalCoinsInLevel}");
         
         OnCoinCollected?.Invoke(collectedCoins);
         
@@ -41,7 +39,6 @@ public class GameManager : MonoBehaviour
     void WinGame()
     {
         isGameActive = false;
-        Debug.Log("ПОБЕДА! Все монеты собраны!");
         
         OnGameWon?.Invoke();
     }

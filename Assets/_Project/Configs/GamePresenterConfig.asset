@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4fcbe566ec948d6979d9c59c7b7b130, type: 3}
   m_Name: GamePresenterConfig
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.MVP.GamePresenterConfig
+  <GameView>k__BackingField: {fileID: 1568889286044685312, guid: 002f09b7b86234d0283e7d691d9f0bdf, type: 3}

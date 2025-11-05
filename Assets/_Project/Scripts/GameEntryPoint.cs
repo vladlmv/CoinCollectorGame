@@ -1,3 +1,4 @@
+using _Project.Scripts.MVP;
 using VContainer;
 using VContainer.Unity;
 using UnityEngine;
@@ -6,22 +7,19 @@ public class GameEntryPoint : IStartable
 {
     private readonly AudioManager _audioManager;
     private readonly GameManager _gameManager;
+    private readonly IGamePresenter _gamePresenter;
 
-    public GameEntryPoint(AudioManager audioManager, GameManager gameManager)
+    public GameEntryPoint(
+        AudioManager audioManager, 
+        GameManager gameManager,
+        IGamePresenter gamePresenter)
     {
         _audioManager = audioManager;
         _gameManager = gameManager;
+        _gamePresenter = gamePresenter;
     }
 
     void IStartable.Start()
     {
-        Debug.Log("VContainer запущен!");
-        Debug.Log($"AudioManager: {_audioManager != null}");
-        Debug.Log($"GameManager: {_gameManager != null}");
-        
-        if (_gameManager != null)
-        {
-            Debug.Log($"Всего монет на уровне: {_gameManager.GetTotalCoins()}");
-        }
     }
 }

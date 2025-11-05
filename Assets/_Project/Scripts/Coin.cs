@@ -18,11 +18,6 @@ public class Coin : MonoBehaviour
         
         _audioManager = FindAnyObjectByType<AudioManager>();
         _gameManager = FindAnyObjectByType<GameManager>();
-        
-        if (_audioManager == null)
-            Debug.LogError("AudioManager не найден в сцене!");
-        if (_gameManager == null)
-            Debug.LogError("GameManager не найден в сцене!");
     }
 
     void Update()
@@ -48,7 +43,6 @@ public class Coin : MonoBehaviour
         if (_audioManager != null)
         {
             _audioManager.PlayCoinCollectSound();
-            Debug.Log("Звук монеты воспроизведен!");
         }
         else
         {

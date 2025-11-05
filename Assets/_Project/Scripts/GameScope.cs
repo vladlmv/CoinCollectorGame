@@ -3,27 +3,30 @@ using VContainer;
 using VContainer.Unity;
 using UnityEngine;
 
-public class GameScope : LifetimeScope //нейминги под сцены
+public class GameScope : LifetimeScope
 {
     [Header("Scene References")]
     [SerializeField] private AudioManager audioManager; 
     [SerializeField] private GameManager gameManager;
+    
+    [Header("MVP Configuration")]
     [SerializeField] private GamePresenterConfig _gamePresenterConfig;
 
     protected override void Configure(IContainerBuilder builder)
     {
-        // Регистрируем только менеджеры
+        // Регистрируем менеджеры
         builder.RegisterComponent(audioManager);
         builder.RegisterComponent(gameManager);
         
-        // НЕ регистрируем монеты - используем простой подход
-        builder.RegisterEntryPoint<GameEntryPoint>();
+        // Регистрируем MVP компоненты
+        builder.Register<IGameModel, GameModel>(Lifetime.Scoped)
+            .WithParameter(gameManager); // Передаем GameManager в конструктор
         
-        builder.Register<GameModel>(Lifetime.Scoped)
-            .As<IGameModel>();
+        builder.RegisterInstance(_gamePresenterConfig);
         
         builder.RegisterEntryPoint<GamePresenter>(Lifetime.Scoped)
-            .As<IGamePresenter>() 
-            .WithParameter(_gamePresenterConfig);
+            .As<IGamePresenter>();
+        
+        builder.RegisterEntryPoint<GameEntryPoint>();
     }
 }
