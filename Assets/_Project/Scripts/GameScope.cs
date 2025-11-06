@@ -1,4 +1,5 @@
 using _Project.Scripts.MVP;
+using _Project.Scripts.Services;
 using VContainer;
 using VContainer.Unity;
 using UnityEngine;
@@ -18,9 +19,11 @@ public class GameScope : LifetimeScope
         builder.RegisterComponent(audioManager);
         builder.RegisterComponent(gameManager);
         
+        // Регистрируем BankService
+        builder.Register<IBankService, BankService>(Lifetime.Singleton);
+        
         // Регистрируем MVP компоненты
-        builder.Register<IGameModel, GameModel>(Lifetime.Scoped)
-            .WithParameter(gameManager); // Передаем GameManager в конструктор
+        builder.Register<IGameModel, GameModel>(Lifetime.Scoped);
         
         builder.RegisterInstance(_gamePresenterConfig);
         
@@ -28,5 +31,12 @@ public class GameScope : LifetimeScope
             .As<IGamePresenter>();
         
         builder.RegisterEntryPoint<GameEntryPoint>();
+        
+        builder.RegisterBuildCallback(container =>
+        {
+            var bankService = container.Resolve<IBankService>();
+            var totalCoins = Coin.GetTotalCoinsInScene();
+            bankService.Initialize(totalCoins);
+        });
     }
 }

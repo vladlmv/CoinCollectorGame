@@ -1,6 +1,7 @@
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using _Project.Scripts.Services;
 
 namespace _Project.Scripts.MVP
 {
@@ -10,14 +11,15 @@ namespace _Project.Scripts.MVP
     
     public class GamePresenter : IGamePresenter, System.IDisposable
     {
-        private readonly IGameModel _model;
+        private readonly IBankService _bankService; // Добавил BankService
         private readonly GamePresenterConfig _config;
         private GameView _view;
+        private float _gameTime;
 
         [Inject]
-        public GamePresenter(IGameModel model, GamePresenterConfig config)
+        public GamePresenter(IBankService bankService, GamePresenterConfig config, AudioManager audioManager)
         {
-            _model = model;
+            _bankService = bankService; // Получаем BankService через DI
             _config = config;
         }
 
@@ -31,19 +33,19 @@ namespace _Project.Scripts.MVP
             _view.RestartButtonClicked += OnRestartButtonClicked;
             _view.MenuButtonClicked += OnMenuButtonClicked;
             
-            // Подписываемся на события Model
-            _model.CoinCollected += OnCoinCollected;
-            _model.GameWon += OnGameWon;
-            _model.TimerUpdated += OnTimerUpdated;
+            // Подписываемся на события BankService вместо GameManager
+            _bankService.OnCoinCollected += OnCoinCollected;
+            _bankService.OnCoinsChanged += OnCoinsChanged;
+            _bankService.OnBankInitialized += OnBankInitialized;
             
-            // Инициализируем начальное состояние
-            UpdateCoinDisplay();
+            InitializeGame();
         }
+        
 
         void ITickable.Tick()
         {
-            // Обновляем таймер каждый кадр
-            _model.UpdateTimer(Time.deltaTime);
+            _gameTime += Time.deltaTime;
+            _view.UpdateTimer(_gameTime);
         }
 
         public void Dispose()
@@ -55,15 +57,15 @@ namespace _Project.Scripts.MVP
                 _view.MenuButtonClicked -= OnMenuButtonClicked;
             }
             
-            _model.CoinCollected -= OnCoinCollected;
-            _model.GameWon -= OnGameWon;
-            _model.TimerUpdated -= OnTimerUpdated;
+            _bankService.OnCoinCollected -= OnCoinCollected;
+            _bankService.OnCoinsChanged -= OnCoinsChanged;
+            _bankService.OnBankInitialized -= OnBankInitialized;
         }
 
         // Обработчики событий от View
         private void OnRestartButtonClicked()
         {
-            _model.RestartGame();
+            RestartGame();
         }
 
         private void OnMenuButtonClicked()
@@ -71,25 +73,50 @@ namespace _Project.Scripts.MVP
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
 
-        // Обработчики событий от Model
+        // Обработчики событий от BankService
         private void OnCoinCollected(int collectedCoins)
+        {
+            UpdateCoinDisplay();
+            
+            if (_bankService.IsAllCoinsCollected)
+            {
+                OnGameWon();
+            }
+        }
+
+        private void OnCoinsChanged(int coins)
+        {
+            // Дополнительная логика при изменении количества монет
+            UpdateCoinDisplay();
+        }
+
+        private void OnBankInitialized()
         {
             UpdateCoinDisplay();
         }
 
         private void OnGameWon()
         {
-            _view.ShowVictoryScreen(_model.GameTime);
+            _view.ShowVictoryScreen(_gameTime);
         }
 
-        private void OnTimerUpdated(float gameTime)
+        private void InitializeGame()
         {
-            _view.UpdateTimer(gameTime);
+            _gameTime = 0f;
+            UpdateCoinDisplay();
+            _view.UpdateTimer(_gameTime);
         }
 
         private void UpdateCoinDisplay()
         {
-            _view.UpdateCoinCounter(_model.CollectedCoins, _model.TotalCoins);
+            _view.UpdateCoinCounter(_bankService.CurrentCoins, _bankService.TotalCoinsInLevel);
+        }
+
+        private void RestartGame()
+        {
+            _bankService.Reset();
+            _gameTime = 0f;
+            InitializeGame();
         }
     }
 }

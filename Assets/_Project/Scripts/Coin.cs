@@ -1,4 +1,6 @@
 using UnityEngine;
+using _Project.Scripts.Services;
+using VContainer;
 
 public class Coin : MonoBehaviour
 {
@@ -8,16 +10,16 @@ public class Coin : MonoBehaviour
     private bool isCollected = false;
     private Renderer coinRenderer;
     private Collider coinCollider;
+    private IBankService _bankService;
     private AudioManager _audioManager;
-    private GameManager _gameManager;
 
     void Start()
     {
         coinRenderer = GetComponent<Renderer>();
         coinCollider = GetComponent<Collider>();
         
+        _bankService = FindAnyObjectByType<GameScope>()?.Container?.Resolve<IBankService>();
         _audioManager = FindAnyObjectByType<AudioManager>();
-        _gameManager = FindAnyObjectByType<GameManager>();
     }
 
     void Update()
@@ -40,24 +42,23 @@ public class Coin : MonoBehaviour
     {
         isCollected = true;
         
+        // Логика сбора монеты
+        if (_bankService != null)
+        {
+            _bankService.CollectCoin();
+        }
+        
+        // Воспроизводим звук НЕПОСРЕДСТВЕННО в монете
         if (_audioManager != null)
         {
             _audioManager.PlayCoinCollectSound();
         }
         else
         {
-            Debug.LogError("AudioManager не найден!");
+            Debug.LogError("Coin: AudioManager не найден!");
         }
         
-        if (_gameManager != null)
-        {
-            _gameManager.AddCoin();
-        }
-        else
-        {
-            Debug.LogError("GameManager не найден!");
-        }
-        
+        // Визуальное скрытие монеты
         if (coinRenderer != null)
             coinRenderer.enabled = false;
         if (coinCollider != null)
